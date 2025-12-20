@@ -1,0 +1,13 @@
+#!/bin/bash
+
+FIRE_BRANCH="wip/fire/$USER-$(date '+%d-%m-%Y-%H-%M-%N')"
+ORIG_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# push any local changes to a fire branch
+git checkout -b "$FIRE_BRANCH" &&
+git stage -A &&
+git commit --no-verify -m 'WIP: fire alert!'
+git push --no-verify origin "$FIRE_BRANCH"
+
+# get back to the original branch
+git switch "$ORIG_BRANCH"

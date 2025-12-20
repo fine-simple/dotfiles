@@ -1,0 +1,121 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "palette": {
+    "background": "#383a42",
+    "black": "#262B44",
+    "blue": "#0184bc",
+    "comment": "#a0a1a7",
+    "cyan": "#0997b3",
+    "green": "#008a00",
+    "gutterBack": "#d4d4d4",
+    "primary": "#fafafa",
+    "purple": "#a626a4",
+    "red": "#e45649",
+    "selection": "#bfceff",
+    "white": "#fafafa",
+    "yellow": "#c18401"
+  },
+  "secondary_prompt": {
+    "template": "\uea9c    ",
+    "foreground": "p:green",
+    "background": "transparent"
+  },
+  "transient_prompt": {
+    "template": "❯ ",
+    "background": "transparent",
+    "foreground_templates": [
+      "{{if ne .Code 0}}p:red{{end}}",
+      "{{if eq .Code 0}}p:green{{end}}"
+    ]
+  },
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "leading_diamond": "\ue0b2",
+          "template": " {{.Icon}} ",
+          "foreground": "p:yellow",
+          "background": "p:background",
+          "type": "os",
+          "style": "diamond"
+        },
+        {
+          "properties": {
+            "cache_duration": "none",
+            "home_icon": "\uf46d",
+            "style": "agnoster_short"
+          },
+          "trailing_diamond": "\ue0b0",
+          "template": " \uf07c {{ .Path }}{{ with .Segments.Git }}{{ else }} {{ end }}",
+          "foreground": "p:blue",
+          "background": "p:background",
+          "type": "path",
+          "style": "diamond"
+        },
+        {
+          "properties": {
+            "branch_icon": "\uf126 ",
+            "branch_max_length": 25,
+            "cache_duration": "none",
+            "fetch_stash_count": true,
+            "fetch_status": true,
+            "fetch_upstream_icon": true
+          },
+          "trailing_diamond": "\ue0b0",
+          "template": "{{ .HEAD }}{{ if gt (len .HEAD) 25 }}..{{ end }}{{if or .Ahead .Behind }}<p:blue> {{ .BranchStatus }}</>{{ end }}{{ if .Working.Changed }} <p:red>\uf044 {{ .Working.String }}</>{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }}{{ end }}{{ if .Staging.Changed }} <p:green>\uf046 {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }} <p:yellow>\ueb4b {{ .StashCount }}</>{{ end }} ",
+          "foreground": "p:green",
+          "background": "p:background",
+          "type": "git",
+          "style": "diamond"
+        }
+      ],
+      "newline": true
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "properties": {
+            "always_enabled": true,
+            "cache_duration": "none"
+          },
+          "leading_diamond": "\ue0b2",
+          "trailing_diamond": "\ue0b0",
+          "template": " {{ .FormattedMs }} \uf252 ",
+          "foreground": "#c4a000",
+          "powerline_symbol": "\ue0b2",
+          "background": "p:background",
+          "type": "executiontime",
+          "style": "diamond",
+          "invert_powerline": true
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "❯",
+          "type": "text",
+          "style": "plain",
+          "foreground_templates": [
+            "{{if eq .Code 0}}p:green{{else}}p:red{{end}}"
+          ]
+        }
+      ],
+      "newline": true
+    }
+  ],
+  "version": 3,
+  "final_space": true
+}

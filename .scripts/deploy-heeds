@@ -1,0 +1,77 @@
+#!/bin/bash
+
+build_project() {
+  echo "Building the project..."
+  npm run build || { echo "Build failed! Exiting..."; exit 1; }
+}
+
+check_container() {
+  local container="$1"
+  if ! docker ps --format '{{.Names}}' | grep -q "^${container}$"; then
+    echo "Error: Container '${container}' is not running."
+    exit 1
+  fi
+}
+
+backup_existing_folder() {
+  local container="$1"
+  local folder_path="$2"
+
+  if docker exec "$container" test -d "$folder_path"; then
+    local backup_path="${folder_path}.bak"
+
+    if docker exec "$container" test -d "$backup_path"; then
+      local i=2
+      while docker exec "$container" test -d "${backup_path}.${i}"; do
+        ((i++))
+      done
+      docker exec "$container" mv "$backup_path" "${backup_path}.${i}"
+    fi
+
+    docker exec "$container" mv "$folder_path" "$backup_path"
+    echo "Backed up $folder_path to $backup_path"
+  fi
+}
+
+deploy_folder() {
+  local container="$1"
+  local src_path="$2"
+  local dest_path="$3"
+
+  if [ -d "$src_path" ]; then
+    echo "Deploying $(basename "$src_path")..."
+
+    backup_existing_folder "$container" "$dest_path"
+
+    docker cp "$src_path" "$container:$dest_path"
+    echo "Deployment of $(basename "$src_path") completed."
+  else
+    echo "Warning: Source directory '$src_path' not found, skipping..."
+  fi
+}
+
+reload_nginx() {
+  local container="$1"
+  echo "Reloading Nginx..."
+  docker exec "$container" nginx -s reload
+}
+
+deploy() {
+  local container="hc-nginx"
+  local src_dir="build/HEEDS"
+  local dest_base_dir="/usr/share/nginx/html"
+  local folders=("HEEDS_SYSTEMS_MDO")
+
+  check_container "$container"
+
+  for folder in "${folders[@]}"; do
+    deploy_folder "$container" "$src_dir" "$dest_base_dir/$folder"
+  done
+
+  reload_nginx "$container"
+
+  echo "Deployment process completed!"
+}
+
+build_project
+deploy

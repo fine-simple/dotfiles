@@ -1,0 +1,38 @@
+[push]
+	autoSetupRemote = true
+	default = current
+	gpgSign = false
+[user]
+	email = ahmed.tawfik.at10@gmail.com
+	name = Ahmed Tawfik
+[core]
+	editor = vim
+[rerere]
+	enabled = true
+[alias]
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	fire = !git-fire
+	staash = stash -u
+	bb = !better-git-branch
+	count-lines = "! git log --author=\"$1\" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }' #"
+  rm-branch = "!git branch -D \"$1\"; git push origin --delete origin/\"$1\""
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[gpg]
+	format = ssh
+[fetch]
+	writeCommitGraph = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[color]
+	ui = auto
+[init]
+	defaultBranch = main
+[includeIf "gitdir:~/work/"]
+  path = ~/.work/.gitconfig
+

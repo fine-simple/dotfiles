@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+PROJECT_CACHE="$HOME/.cache/tmux-projects.cache"
+SEARCH_DIRS=(~/work)
+
+build_cache() {
+  echo "Building project cache..." >&2
+  mkdir -p "$(dirname "$PROJECT_CACHE")"
+
+  for dir in "${SEARCH_DIRS[@]}"; do
+    fd package.json "$dir" --type f --exec dirname {} \;
+  done | sort -u >"$PROJECT_CACHE"
+}
+
+if [[ "$1" == "--refresh" || ! -f "$PROJECT_CACHE" ]]; then
+  build_cache
+fi
+
+if [[ $(find "$PROJECT_CACHE" -mmin +60 2>/dev/null) ]]; then
+  build_cache
+fi
+
+project_root=$(cat "$PROJECT_CACHE" | fzf-tmux \
+  --height=60% \
+  --reverse \
+  --prompt="Select Project > " \
+  --preview="echo {} && echo && git -C {} remote -v && echo && cat {}/package.json | jq '.name, .scripts.start' 2>/dev/null" \
+  --preview-window=wrap)
+
+[[ -z "$project_root" ]] && exit 0
+
+# Detect command
+start_cmd="npm run dev"
+if [[ -f "$project_root/package.json" ]]; then
+  pkg_json=$(<"$project_root/package.json")
+  if echo "$pkg_json" | grep -q '"next"'; then
+    start_cmd="next dev"
+  elif echo "$pkg_json" | grep -q '"react-scripts"'; then
+    start_cmd="npm start"
+  elif echo "$pkg_json" | grep -q '"vue"'; then
+    start_cmd="npm run serve"
+  fi
+fi
+
+if [[ -f "$project_root/.tmuxinator.yml" ]]; then
+  tmuxinator start "$project_root/.tmuxinator.yml" --append
+else
+  PROJECT_ROOT="$project_root" START_CMD="$start_cmd" tmuxinator start frontend --append
+fi

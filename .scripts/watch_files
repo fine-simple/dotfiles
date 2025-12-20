@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Directory or file to watch
+WATCH_DIR="$1"
+
+# Command to run when a change is detected
+COMMAND="${@:2}"
+
+# Check if arguments are provided
+if [[ -z "$WATCH_DIR" || -z "$COMMAND" ]]; then
+    echo "Usage: $0 <directory_or_file_to_watch> <command_to_run>"
+    exit 1
+fi
+
+echo "Watching $WATCH_DIR for changes..."
+
+# Monitor file changes and run command
+inotifywait -m -e close_write "$WATCH_DIR" | while read path action file; do
+    echo "Change detected: $action on $file"
+    eval "$COMMAND"
+done
+
