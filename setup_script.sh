@@ -4,6 +4,13 @@ set -euo
 
 install_pkg() {
   local pkg="$1"
+  local cmd="${2:-$1}"  # Use second arg as command name, or default to package name
+  
+  # Check if command already exists
+  if command -v "$cmd" &>/dev/null; then
+    return 0
+  fi
+  
   if command -v apt &>/dev/null; then
     sudo apt update && sudo apt install -y "$pkg"
   elif command -v dnf &>/dev/null; then
@@ -22,46 +29,23 @@ install_pkg() {
 
 echo 'Installing necessary packages...'
 
-if ! command -v stow >/dev/null; then
-  install_pkg stow
-fi
-
-if ! command -v zsh >/dev/null; then
-  install_pkg zsh
-fi
-
-if ! command -v tmux >/dev/null; then
-  install_pkg tmux
-fi
+install_pkg stow
+install_pkg zsh
+install_pkg tmux
 
 # Install necessary programs
-if ! command -v unzip >/dev/null; then
-  sudo apt install unzip
-fi
+sudo apt install unzip
 
 if ! command -v oh-my-posh >/dev/null; then
   curl -s https://ohmyposh.dev/install.sh | bash -s
 fi
 
-if ! command -v fortune >/dev/null; then
-  install_pkg fortune
-fi
-
-if ! command -v cowsay >/dev/null; then
-  install_pkg cowsay
-fi
-
-if ! command -v fzf >/dev/null; then
-  install_pkg fzf
-fi
-
-if ! command -v python3 >/dev/null; then
-  install_pkg python3
-fi
-
-if ! command -v pip3 >/dev/null; then
-  install_pkg python3-pip
-fi
+install_pkg fortune
+install_pkg cowsay
+install_pkg fzf
+install_pkg python3
+install_pkg python3-pip pip3
+install_pkg nodejs node
 
 if ! command -v colout >/dev/null; then
   pip3 install --user colout
@@ -86,6 +70,15 @@ fi
 
 if ! command -v tmuxinator >/dev/null; then
   gem install tmuxinator
+fi
+
+# Install npm-based tools (now that nodejs is installed)
+if ! command -v bw >/dev/null; then
+  if command -v npm >/dev/null; then
+    npm install -g @bitwarden/cli
+  else
+    echo "⚠️  npm not found, skipping Bitwarden CLI installation"
+  fi
 fi
 
 ZINIT_HOME="$HOME/.local/share/zinit/"
@@ -131,10 +124,16 @@ echo 'Running Stow...'
 
 stow .
 
-if [ -z "${ZSH_VERSION:-}" ]; then
-  echo "Making zsh the default shell..."
+# Set zsh as default shell if not already
+if [ "$SHELL" != "$(which zsh)" ]; then
+  echo "Setting zsh as default shell..."
   chsh -s "$(which zsh)"
+  echo "✓ Zsh set as default shell. Please log out and back in, or run 'exec zsh' to start using it."
 fi
 
-exec zsh
+echo ""
+echo "✓ Dotfiles setup complete!"
+echo "  To apply all changes, either:"
+echo "  1. Log out and log back in"
+echo "  2. Run: exec zsh"
 
