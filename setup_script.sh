@@ -92,34 +92,8 @@ fi
 
 echo 'Adding missing files...'
 
-[ -f .zshrc.ext ] || touch .zshrc.ext
-
 if [ -n "$(grep -i microsoft /proc/version)" -a -f ~/.wsl-init ]; then
   [ ! -f ~/.wsl-init ] && touch ~/.wsl-init
-
-  cat >> .zshrc.ext <<EOF
-
-sudo wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O /usr/local/share/zsh/site-functions/_tmuxinator
-
-# load wsl env variables
-source ~/.wsl-init
-
-EOF
-fi
-
-if [ -f "$HOME/.cargo/env" ]; then
-  cat >> .zshrc.ext <<EOF
-
-# cargo
-source "$HOME/.cargo/env"
-
-EOF
-fi
-
-if command -v thefuck >/dev/null; then
-  cat >> .zshrc.ext <<EOF
-eval $(thefuck --alias f)
-EOF
 fi
 
 echo 'Running Stow...'
