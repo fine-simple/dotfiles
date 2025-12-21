@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -euo
+set -euxo
+
+export PATH=$PATH:~/.local/bin
 
 install_pkg() {
   local pkg="$1"
@@ -32,6 +34,7 @@ echo 'Installing necessary packages...'
 install_pkg stow
 install_pkg zsh
 install_pkg tmux
+install_pkg pipx
 
 # Install necessary programs
 sudo apt install unzip
@@ -45,14 +48,17 @@ install_pkg cowsay
 install_pkg fzf
 install_pkg python3
 install_pkg python3-pip pip3
-install_pkg nodejs node
+
+if ! command -v nvm >/dev/null; then
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+fi
 
 if ! command -v colout >/dev/null; then
-  pip3 install --user colout
+  pipx install colout
 fi
 
 if ! command -v fuck >/dev/null; then
-  pip3 install thefuck
+  pipx install thefuck
 fi
 
 if ! command -v cargo >/dev/null; then
@@ -66,10 +72,6 @@ fi
 
 if ! command -v eza >/dev/null; then
   cargo install eza --locked
-fi
-
-if ! command -v tmuxinator >/dev/null; then
-  gem install tmuxinator
 fi
 
 # Install npm-based tools (now that nodejs is installed)
@@ -122,6 +124,8 @@ fi
 
 echo 'Running Stow...'
 
+stow --adopt .
+git restore .
 stow .
 
 # Set zsh as default shell if not already
