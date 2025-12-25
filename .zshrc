@@ -27,9 +27,6 @@ set +euo pipefail
 export PATH=~/bin:/usr/local/bin:~/.local/bin:~/.scripts:~/.fzf/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin
 
-# Setup fzf search
-source <(fzf --zsh)
-
 # Setup zinit
 ZINIT_HOME="$HOME/.local/share/zinit/"
 
@@ -54,6 +51,11 @@ zinit snippet OMZP::pip
 # Load completions
 autoload -Uz compinit && compinit
 zinit cdreplay -q
+
+# Load edit command
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
 
 # Completion styling
 zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
@@ -110,8 +112,8 @@ eval "$(zoxide init --cmd cd zsh)"
 
 
 # Global Vars
-export EDITOR='vim'
-
+export EDITOR='nvim'
+export VISUAL=$EDITOR
 
 # env specific post setup
 [[ -f ~/.zshrc.post.ext ]] && source ~/.zshrc.post.ext

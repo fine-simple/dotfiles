@@ -35,9 +35,8 @@ install_pkg stow
 install_pkg zsh
 install_pkg tmux
 install_pkg pipx
-
-# Install necessary programs
-sudo apt install unzip
+install_pkg neovim
+install_pkg unzip
 
 if ! command -v oh-my-posh >/dev/null; then
   curl -s https://ohmyposh.dev/install.sh | bash -s
@@ -72,6 +71,10 @@ fi
 
 if ! command -v eza >/dev/null; then
   cargo install eza --locked
+fi
+
+if ! command -v bat >/dev/null; then
+  cargo install bat --locked
 fi
 
 # Install npm-based tools (now that nodejs is installed)
