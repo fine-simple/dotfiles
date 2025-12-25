@@ -1,7 +1,7 @@
 [user]
   email = ahmed.tawfik@siemens.com
   name = Ahmed Tawfik
-  signingkey = ~/.ssh/pub/mentor_rsa
+  signingkey = ~/.ssh/pub/mentor-key.pub
 [gpg]
   format = ssh
 [commit]
