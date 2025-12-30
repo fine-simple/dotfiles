@@ -47,6 +47,7 @@ zinit wait lucid light-mode for lukechilds/zsh-nvm
 zinit snippet OMZP::copyfile
 zinit snippet OMZP::jsontools
 zinit snippet OMZP::pip
+zinit snippet OMZP::ssh-agent
 
 # Load completions
 autoload -Uz compinit && compinit
@@ -63,6 +64,8 @@ zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 zstyle ":completion:*" menu no
 zstyle ":fzf-tab:complete:cd:*" fzf-preview 'ls --color $realpath'
 zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview 'ls --color $realpath'
+zstyle :omz:plugins:ssh-agent identities ~/.ssh/keys/*
+zstyle :omz:plugins:ssh-agent lifetime 24h
 
 eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/powerlevel10k.json)"
 
@@ -93,6 +96,15 @@ bindkey "^p" history-search-backward
 bindkey "^n" history-search-forward
 bindkey -s "^[^L" '^Uclear^M'
 
+# Setup fzf key bindings and fuzzy completion
+# This enables Ctrl+R for fuzzy history search
+if [ -f ~/.fzf.zsh ]; then
+  source ~/.fzf.zsh
+elif [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]; then
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+  source /usr/share/doc/fzf/examples/completion.zsh
+fi
+
 # Functions
 source ~/.functions
 
@@ -109,7 +121,6 @@ fi
 
 # Setup zoxide
 eval "$(zoxide init --cmd cd zsh)"
-
 
 # Global Vars
 export EDITOR='nvim'
