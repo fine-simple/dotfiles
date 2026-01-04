@@ -128,3 +128,6 @@ export VISUAL=$EDITOR
 
 # env specific post setup
 [[ -f ~/.zshrc.post.ext ]] && source ~/.zshrc.post.ext
+
+# export secrets
+[[ -f ~/.secrets ]] && source ~/.secrets
