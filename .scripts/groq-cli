@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""
+Groq CLI - A command-line interface for asking Linux/Bash questions
+"""
+
+import os
+import sys
+from groq import Groq
+
+def main():
+    # Initialize Groq client
+    api_key = os.environ.get("GROQ_API_KEY")
+    
+    if not api_key:
+        print("Error: GROQ_API_KEY environment variable not set")
+        print("Get your API key from: https://console.groq.com/keys")
+        print("Then set it: export GROQ_API_KEY='your-key-here'")
+        sys.exit(1)
+    
+    client = Groq(api_key=api_key)
+    
+    # Get the question from command line arguments
+    if len(sys.argv) < 2:
+        print("Usage: groq-cli <your question>")
+        print("Example: groq-cli 'how do I find all files modified in the last 24 hours?'")
+        sys.exit(1)
+    
+    question = " ".join(sys.argv[1:])
+    
+    # System prompt optimized for Linux/Bash help
+    system_prompt = """You are a helpful Linux and Bash expert assistant. 
+    Provide clear, concise answers with practical examples.
+    When showing commands, format them as code blocks.
+    Focus on being accurate and helpful for command-line tasks."""
+    
+    try:
+        # Create chat completion
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": question}
+            ],
+            model="llama-3.3-70b-versatile",  # Fast and capable model
+            temperature=0.3,  # Lower temperature for more focused answers
+            max_tokens=2048,
+        )
+        
+        response = chat_completion.choices[0].message.content
+        print(response)
+        print()
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+
