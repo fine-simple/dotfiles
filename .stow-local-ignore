@@ -24,5 +24,4 @@ _darcs
 
 
 # custom ignored files
-.scripts
 setup_script.sh

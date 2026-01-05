@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Validation
+: "${TELEGRAM_BOT_TOKEN:?Error: Set TELEGRAM_BOT_TOKEN}"
+: "${TELEGRAM_CHAT_ID:?Error: Set TELEGRAM_CHAT_ID}"
+
+# Message setup: Uses arguments or a default "Task Complete" notice
+MESSAGE="${*:-✅ <b>Task Complete</b> on <code>$(hostname)</code>}"
+
+# Execute request
+curl --silent --show-error --fail -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+     -d "chat_id=${TELEGRAM_CHAT_ID}" \
+     -d "text=${MESSAGE}" > /dev/null
+
