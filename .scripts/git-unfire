@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+PREFIX="origin/wip/fire/$USER-"
+
+# remember current branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# update remote refs
+git fetch origin
+
+# get latest fire branch for this user
+LATEST_BRANCH=$(git for-each-ref \
+  --sort=-committerdate \
+  --format='%(refname:short)' \
+  refs/remotes/origin/wip/fire/ | grep "^$PREFIX" | head -n 1)
+
+if [ -z "$LATEST_BRANCH" ]; then
+  echo "No fire branch found for user $USER"
+  exit 1
+fi
+
+echo "Using $LATEST_BRANCH"
+
+TEMP_BRANCH="temp-unfire-$USER-$$"
+
+# checkout temp branch from remote
+git checkout -b "$TEMP_BRANCH" "$LATEST_BRANCH"
+
+# remove the WIP commit but keep changes
+git reset HEAD~1
+
+# go back
+git switch "$CURRENT_BRANCH"
+
+# apply changes without committing
+git merge --no-commit --no-ff "$TEMP_BRANCH"
+
+# cleanup
+git branch -D "$TEMP_BRANCH"
+
+echo "Changes restored as working directory modifications."
