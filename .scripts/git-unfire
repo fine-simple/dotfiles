@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PREFIX="origin/wip/fire/$USER-"
+PREFIX="wip/fire/$USER-"
 
 # remember current branch
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -13,7 +13,9 @@ git fetch origin
 LATEST_BRANCH=$(git for-each-ref \
   --sort=-committerdate \
   --format='%(refname:short)' \
-  refs/remotes/origin/wip/fire/ | grep "^$PREFIX" | head -n 1)
+  --count 1 \
+  "refs/remotes/**/$PREFIX*" "refs/heads/$PREFIX*" \
+  | grep -E "^$PREFIX" | head -n 1)
 
 if [ -z "$LATEST_BRANCH" ]; then
   echo "No fire branch found for user $USER"
