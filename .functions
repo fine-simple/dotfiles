@@ -1,3 +1,17 @@
-#!/bin/bash
 myip() { ip route show | grep -i default | awk '{ print $3}' }
+
+fzf-history-widget-all() {
+  local selected
+
+  # reload full history file into memory temporarily
+  fc -R ~/.zsh_history
+
+  selected=$(fc -l -n 1 | fzf --tac +s --no-sort --query="$LBUFFER")
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER="$selected"
+  fi
+
+  zle reset-prompt
+}
 

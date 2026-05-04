@@ -1,6 +1,3 @@
-#exit on error
-set -euo pipefail
-
 # set -x # Uncomment for debugging
 
 # env specific pre setup
@@ -19,9 +16,6 @@ if [[ -z "${TMUX:-}" && -t 1 && -z "${ZSH_TMUX_STARTED:-}" ]]; then
     exec tmux new
   fi
 fi
-
-# accept errors
-set +euo pipefail
 
 # configure PATH
 export PATH=~/bin:/usr/local/bin:~/.local/bin:~/.scripts:~/.fzf/bin:$PATH
@@ -68,16 +62,14 @@ zstyle :omz:plugins:ssh-agent lifetime 24h
 eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/powerlevel10k.json)"
 
 # History
-HISTSIZE=10000
+HISTSIZE=2000
 HISTFILE=~/.zsh_history
-SAVEHIST=$HISTSIZE
-HISTDUP=erase
+SAVEHIST=1000000
 setopt appendhistory
 setopt sharehistory
 setopt hist_ignore_all_dups
 setopt hist_ignore_dups
 setopt hist_save_no_dups
-setopt hist_find_no_dups
 setopt hist_ignore_space
 
 # install tpm
@@ -116,6 +108,10 @@ source ~/.aliases
 if [ -z "$TMUX" -o "$(tmux list-windows 2>/dev/null | grep '(active)' | cut -d':' -f1)" = '1' -a "$(tmux list-panes 2> /dev/null | grep '(active)' | cut -d':' -f1)" = '1' ]; then
   fortune -as | cowsay -pnf tux | colout ' [^/|\\]+ ' blue
 fi
+
+# Use fzf to search the actual history file instead of just memory
+zle -N fzf-history-widget-all
+bindkey '^F' fzf-history-widget-all
 
 # Setup zoxide
 eval "$(zoxide init --cmd cd zsh)"
