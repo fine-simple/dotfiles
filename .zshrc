@@ -25,10 +25,6 @@ export PATH=$PATH:/usr/local/go/bin
 # Setup zinit
 ZINIT_HOME="$HOME/.local/share/zinit/"
 
-# NVM setup
-export NVM_COMPLETION=true
-export NVM_SYMLINK_CURRENT="true"
-
 # Source zinit
 source "$ZINIT_HOME/zinit.zsh"
 
@@ -37,7 +33,6 @@ zinit lucid light-mode for zsh-users/zsh-autosuggestions
 zinit lucid light-mode for zsh-users/zsh-syntax-highlighting
 zinit wait lucid light-mode for zsh-users/zsh-completions
 zinit wait lucid light-mode for Aloxaf/fzf-tab
-zinit wait lucid light-mode for lukechilds/zsh-nvm
 # Add in snippets
 zinit snippet OMZP::copyfile
 zinit snippet OMZP::jsontools
@@ -126,4 +121,11 @@ export VISUAL=$EDITOR
 
 # export secrets
 [[ -f ~/.secrets ]] && source ~/.secrets
+
+# fnm
+FNM_PATH="/home/tawfik/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "$(fnm env --shell zsh)"
+fi
 

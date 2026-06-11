@@ -48,8 +48,8 @@ install_pkg fzf
 install_pkg python3
 install_pkg python3-pip pip3
 
-if ! command -v nvm >/dev/null; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+if ! command -v fnm >/dev/null; then
+  curl -fsSL https://fnm.vercel.app/install | bash
 fi
 
 if ! command -v colout >/dev/null; then
