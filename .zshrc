@@ -1,4 +1,5 @@
-# set -x # Uncomment for debugging
+# Uncomment for debugging
+# set -x 
 
 # env specific pre setup
 [[ -f ~/.zshrc.pre.ext ]] && source ~/.zshrc.pre.ext
@@ -125,3 +126,4 @@ export VISUAL=$EDITOR
 
 # export secrets
 [[ -f ~/.secrets ]] && source ~/.secrets
+
