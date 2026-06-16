@@ -77,6 +77,10 @@ if ! command -v bat >/dev/null; then
   cargo install bat --locked
 fi
 
+if ! command -v delta >/dev/null; then
+  cargo install git-delta --locked
+fi
+
 # Install npm-based tools (now that nodejs is installed)
 if ! command -v bw >/dev/null; then
   if command -v npm >/dev/null; then

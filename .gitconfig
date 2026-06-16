@@ -7,6 +7,7 @@
 	name = Ahmed Tawfik
 [core]
 	editor = vim
+	pager = delta
 [rerere]
 	enabled = true
 [alias]
@@ -37,3 +38,9 @@
 [includeIf "gitdir:~/work/"]
   path = ~/.work/.gitconfig
 
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+[merge]
+	conflictStyle = zdiff3
