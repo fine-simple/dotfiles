@@ -22,24 +22,40 @@ fi
 export PATH=~/bin:/usr/local/bin:~/.local/bin:~/.scripts:~/.fzf/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin
 
+# WSL: strip Windows paths (/mnt/c/...) added by interop. Stat/readdir on drvfs
+# is very slow, and compinit/completions scan every PATH dir on each shell.
+# Fall back to `wslpath` etc. from an explicit Windows path if you ever need it.
+if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
+  path=("${(@)path:#/mnt/*}")
+fi
+
 # Setup zinit
 ZINIT_HOME="$HOME/.local/share/zinit/"
 
 # Source zinit
 source "$ZINIT_HOME/zinit.zsh"
 
-# Add in zsh plugins
+# Add in zsh plugins 
+# add wait before `lucid` to enable turbo mode (load after first prompt so panes/windows render instantly)
 zinit lucid light-mode for zsh-users/zsh-autosuggestions
 zinit lucid light-mode for zsh-users/zsh-syntax-highlighting
-zinit wait lucid light-mode for zsh-users/zsh-completions
-zinit wait lucid light-mode for Aloxaf/fzf-tab
+zinit lucid light-mode for zsh-users/zsh-completions
+zinit lucid light-mode for Aloxaf/fzf-tab
 # Add in snippets
 zinit snippet OMZP::copyfile
 zinit snippet OMZP::jsontools
 zinit snippet OMZP::pip
 
-# Load completions
-autoload -Uz compinit && compinit
+# Load completions (only run the full, slower security check once per day;
+# subsequent shells reuse the cached dump for a much faster compinit)
+autoload -Uz compinit
+_zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+if [[ -n ${_zcompdump}(#qN.mh+24) ]]; then
+  compinit -d "${_zcompdump}"
+else
+  compinit -C -d "${_zcompdump}"
+fi
+unset _zcompdump
 zinit cdreplay -q
 
 # Load edit command
@@ -55,7 +71,15 @@ zstyle ":fzf-tab:complete:cd:*" fzf-preview 'ls --color $realpath'
 zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview 'ls --color $realpath'
 zstyle :omz:plugins:ssh-agent lifetime 24h
 
-eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/powerlevel10k.json)"
+# Cache the generated init script so we don't spawn oh-my-posh on every shell/pane;
+# it's only regenerated when the config file changes.
+POSH_CONFIG="$HOME/.config/ohmyposh/powerlevel10k.json"
+POSH_CACHE="$HOME/.cache/oh-my-posh-init.zsh"
+if [[ ! -f "$POSH_CACHE" || "$POSH_CONFIG" -nt "$POSH_CACHE" ]]; then
+  mkdir -p "${POSH_CACHE:h}"
+  oh-my-posh init zsh --config "$POSH_CONFIG" > "$POSH_CACHE"
+fi
+source "$POSH_CACHE"
 
 # History
 HISTSIZE=2000
@@ -100,10 +124,6 @@ source ~/.cargo/env
 # Aliases
 source ~/.aliases
 
-# Hello Message
-if [[ -z "$TMUX" -o "$(tmux list-windows 2>/dev/null | grep '(active)' | cut -d':' -f1)" = '1' -a "$(tmux list-panes 2> /dev/null | grep '(active)' | cut -d':' -f1)" = '1' ]]; then
-  fortune -as | cowsay -pnf tux | colout ' [^/|\\]+ ' blue
-fi
 
 # Use fzf to search the actual history file instead of just memory
 zle -N fzf-history-widget-all
@@ -122,11 +142,19 @@ export VISUAL=$EDITOR
 # export secrets
 [[ -f ~/.secrets ]] && source ~/.secrets
 
-# fnm
+# fnm (lazy-loaded: avoid spawning the fnm binary on every pane/window unless
+# node/npm/npx/fnm is actually used in that shell)
 FNM_PATH="/home/tawfik/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
-  eval "$(fnm env --shell zsh)"
+  __fnm_lazy_load() {
+    unfunction fnm node npm npx yarn pnpm 2>/dev/null
+    eval "$(command fnm env --shell zsh)"
+  }
+  for __cmd in fnm node npm npx yarn pnpm; do
+    eval "${__cmd}() { __fnm_lazy_load; ${__cmd} \"\$@\" }"
+  done
+  unset __cmd
 fi
 
 # bun completions
