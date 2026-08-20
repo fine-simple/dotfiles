@@ -55,8 +55,6 @@ This repository contains my personal dotfiles and configuration for a modern ter
 - **eza**: Modern replacement for `ls` with better colors and icons
 - **zoxide**: Smart directory jumper (replaces `cd`)
 - **fzf**: Fuzzy finder for files, history, and more
-- **thefuck**: Magnificent command corrector
-- **colout**: Colorize command output
 - **tmuxinator**: Tmux session manager
 
 ### Custom Scripts
@@ -101,7 +99,6 @@ The script will:
 - Detect your package manager and install required packages
 - Install core tools: stow, zsh, tmux, fzf, python3
 - Install modern CLI tools: eza, zoxide, oh-my-posh
-- Install fun tools: fortune, cowsay
 - Install development tools: cargo (Rust), nvm (Node.js)
 - Set up Zinit plugin manager
 - Configure additional settings for WSL if detected
@@ -115,13 +112,13 @@ If you prefer manual installation:
 1. Install required packages:
 ```bash
 # Debian/Ubuntu
-sudo apt install git stow zsh tmux fzf python3 python3-pip fortune cowsay
+sudo apt install git stow zsh tmux fzf python3 python3-pip
 
 # Fedora
-sudo dnf install git stow zsh tmux fzf python3 python3-pip fortune-mod cowsay
+sudo dnf install git stow zsh tmux fzf python3 python3-pip
 
 # Arch Linux
-sudo pacman -S git stow zsh tmux fzf python python-pip fortune-mod cowsay
+sudo pacman -S git stow zsh tmux fzf python python-pip
 ```
 
 2. Clone the repository:
@@ -146,9 +143,6 @@ curl https://sh.rustup.rs -sSf | sh
 
 # Eza and Zoxide (requires cargo)
 cargo install eza zoxide --locked
-
-# Python tools
-pip3 install --user colout thefuck
 
 # Zinit
 git clone https://github.com/zdharma-continuum/zinit.git ~/.local/share/zinit
@@ -177,7 +171,6 @@ exec zsh
 - `.config/nvim/init.vim` - Neovim configuration
 - `.config/ohmyposh/` - Oh My Posh themes
 - `.config/wezterm/` - WezTerm terminal emulator config
-- `.config/thefuck/` - TheFuck command corrector settings
 
 ### Extension Points
 - `.zshrc.pre.ext` - Sourced before main Zsh config (optional, not tracked)

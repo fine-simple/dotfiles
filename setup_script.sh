@@ -42,22 +42,12 @@ if ! command -v oh-my-posh >/dev/null; then
   curl -s https://ohmyposh.dev/install.sh | bash -s
 fi
 
-install_pkg fortune
-install_pkg cowsay
 install_pkg fzf
 install_pkg python3
 install_pkg python3-pip pip3
 
 if ! command -v fnm >/dev/null; then
   curl -fsSL https://fnm.vercel.app/install | bash
-fi
-
-if ! command -v colout >/dev/null; then
-  pipx install colout
-fi
-
-if ! command -v fuck >/dev/null; then
-  pipx install thefuck
 fi
 
 if ! command -v cargo >/dev/null; then

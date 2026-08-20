@@ -118,9 +118,6 @@ fi
 # Functions
 source ~/.functions
 
-# cargo
-source ~/.cargo/env
-
 # Aliases
 source ~/.aliases
 
