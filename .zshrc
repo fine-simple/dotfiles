@@ -70,7 +70,7 @@ setopt hist_ignore_space
 
 # install tpm
 TPM_HOME="$HOME/.tmux/plugins/tpm"
-if [ ! -d "$TPM_HOME" ]; then
+if [[ ! -d "$TPM_HOME" ]]; then
   git clone https://github.com/tmux-plugins/tpm "$TPM_HOME"
 fi
 
@@ -84,9 +84,9 @@ bindkey -s "^[^L" '^Uclear^M'
 
 # Setup fzf key bindings and fuzzy completion
 # This enables Ctrl+R for fuzzy history search
-if [ -f ~/.fzf.zsh ]; then
+if [[ -f ~/.fzf.zsh ]]; then
   source ~/.fzf.zsh
-elif [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]; then
+elif [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
   source /usr/share/doc/fzf/examples/key-bindings.zsh
   source /usr/share/doc/fzf/examples/completion.zsh
 fi
@@ -101,7 +101,7 @@ source ~/.cargo/env
 source ~/.aliases
 
 # Hello Message
-if [ -z "$TMUX" -o "$(tmux list-windows 2>/dev/null | grep '(active)' | cut -d':' -f1)" = '1' -a "$(tmux list-panes 2> /dev/null | grep '(active)' | cut -d':' -f1)" = '1' ]; then
+if [[ -z "$TMUX" -o "$(tmux list-windows 2>/dev/null | grep '(active)' | cut -d':' -f1)" = '1' -a "$(tmux list-panes 2> /dev/null | grep '(active)' | cut -d':' -f1)" = '1' ]]; then
   fortune -as | cowsay -pnf tux | colout ' [^/|\\]+ ' blue
 fi
 
@@ -127,5 +127,12 @@ FNM_PATH="/home/tawfik/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "$(fnm env --shell zsh)"
+fi
+
+# bun completions
+if [[ -s "/home/tawfik/.bun/_bun" ]]; then
+  source "/home/tawfik/.bun/_bun"
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
 fi
 
