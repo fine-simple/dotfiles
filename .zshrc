@@ -58,7 +58,9 @@ zinit cdreplay -q
 # Load edit command
 autoload edit-command-line
 zle -N edit-command-line
-bindkey '^x^e' edit-command-line
+bindkey -M emacs '^X^E' edit-command-line
+bindkey -M vicmd '^X^E' edit-command-line
+bindkey -M viins '^X^E' edit-command-line
 
 # Completion styling
 zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
