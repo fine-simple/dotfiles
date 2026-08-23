@@ -55,13 +55,11 @@ This repository contains my personal dotfiles and configuration for a modern ter
 - **eza**: Modern replacement for `ls` with better colors and icons
 - **zoxide**: Smart directory jumper (replaces `cd`)
 - **fzf**: Fuzzy finder for files, history, and more
-- **tmuxinator**: Tmux session manager
 
 ### Custom Scripts
 Located in `.scripts/`:
 - `better-git-branch` - Enhanced git branch management
 - `git-fire` - Emergency git commit and push
-- `muxf` - Fuzzy tmux session selector
 - `watch_files` - File watching utility
 
 ## Requirements
@@ -175,7 +173,6 @@ exec zsh
 ### Extension Points
 - `.zshrc.pre.ext` - Sourced before main Zsh config (optional, not tracked)
 - `.zshrc.post.ext` - Sourced after main Zsh config (optional, not tracked)
-- `.wsl-init` - WSL-specific environment variables (optional, not tracked)
 
 ## Key Bindings
 

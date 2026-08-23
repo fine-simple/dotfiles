@@ -42,12 +42,16 @@ if ! command -v oh-my-posh >/dev/null; then
   curl -s https://ohmyposh.dev/install.sh | bash -s
 fi
 
-install_pkg fzf
+if ! command -v fzf >/dev/null; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+fi
+
 install_pkg python3
 install_pkg python3-pip pip3
 
 if ! command -v fnm >/dev/null; then
-  curl -fsSL https://fnm.vercel.app/install | bash
+  curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 fi
 
 if ! command -v cargo >/dev/null; then
@@ -86,12 +90,6 @@ if [ ! -d "$ZINIT_HOME" ]; then
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 
-
-echo 'Adding missing files...'
-
-if [ -n "$(grep -i microsoft /proc/version)" -a -f ~/.wsl-init ]; then
-  [ ! -f ~/.wsl-init ] && touch ~/.wsl-init
-fi
 
 echo 'Running Stow...'
 

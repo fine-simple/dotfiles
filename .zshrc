@@ -1,6 +1,3 @@
-# Uncomment for debugging
-# set -x 
-
 # env specific pre setup
 [[ -f ~/.zshrc.pre.ext ]] && source ~/.zshrc.pre.ext
 
