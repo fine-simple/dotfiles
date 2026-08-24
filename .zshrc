@@ -1,6 +1,25 @@
 # 1. Environment & Path Setup
 [[ -f ~/.zshrc.pre.ext ]] && source ~/.zshrc.pre.ext
 
+# --- Atuin & Runtime Fixes ---
+# Fix for WSL/NFS missing runtime directories
+if [[ -z "$XDG_RUNTIME_DIR" ]] || [[ ! -d "$XDG_RUNTIME_DIR" ]]; then
+    export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
+    mkdir -p "$XDG_RUNTIME_DIR"
+    chmod 700 "$XDG_RUNTIME_DIR"
+fi
+
+# Prevent Atuin from hijacking the Up arrow
+export ATUIN_NOBIND_UP=true
+
+# Force Atuin to use a native Linux path to bypass NFS/WSL locking issues
+export ATUIN_DATA_DIR="$HOME/.atuin-local"
+mkdir -p "$ATUIN_DATA_DIR"
+
+# Load Atuin binary environment
+[[ -f "$HOME/.atuin/bin/env" ]] && . "$HOME/.atuin/bin/env"
+# -------------------------------------------------------------
+
 export EDITOR='nvim'
 export VISUAL='nvim'
 export PATH=~/bin:/usr/local/bin:~/.local/bin:~/.scripts:~/.fzf/bin:$PATH
@@ -26,11 +45,10 @@ fi
 ZINIT_HOME="$HOME/.local/share/zinit/"
 source "$ZINIT_HOME/zinit.zsh"
 
-# 4. Optimized Completions (Fixes the 1.5s lag)
+# 4. Optimized Completions
 setopt extendedglob
 autoload -Uz compinit
 _zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
-# Only run full security check if cache is older than 24h
 if [[ -n ${_zcompdump}(#qN.mh+24) ]]; then
   compinit -d "${_zcompdump}"
 else
@@ -39,28 +57,39 @@ fi
 unset _zcompdump
 zinit cdreplay -q
 
-# 5. Plugins (Turbo Mode)
-zinit lucid light-mode for zsh-users/zsh-autosuggestions
-zinit lucid light-mode for zsh-users/zsh-syntax-highlighting
-zinit lucid light-mode for zsh-users/zsh-completions
-zinit lucid light-mode for Aloxaf/fzf-tab
+# 5. Functions & Aliases (Source EARLY so widgets can use them)
+[[ -f ~/.functions ]] && source ~/.functions
+[[ -f ~/.aliases ]] && source ~/.aliases
+
+# 6. Plugins (Turbo Mode)
+zinit ice wait"0" lucid; zinit light zsh-users/zsh-autosuggestions
+zinit ice wait"0" lucid; zinit light Aloxaf/fzf-tab
+zinit ice wait"0" lucid; zinit light zsh-users/zsh-completions
+zinit ice wait"0" lucid; zinit light olets/zsh-abbr
+
+# ATUIN FIX: Use 'atload' to re-bind the Up arrow AFTER the plugin loads
+zinit ice wait"0" lucid atload"bindkey '^[[A' up-line-or-history; bindkey '^[OA' up-line-or-history"
+zinit light atuinsh/atuin
+
+# Load syntax highlighting last
+zinit ice wait"0" lucid; zinit light zsh-users/zsh-syntax-highlighting
 
 zinit snippet OMZP::copyfile
 zinit snippet OMZP::jsontools
 zinit snippet OMZP::pip
 
-# 6. History & Options
-HISTSIZE=2000
-HISTFILE=~/.zsh_history
+# 7. History & Options (NFS Optimized)
+HISTSIZE=5000
 SAVEHIST=1000000
-setopt appendhistory
-setopt sharehistory
+HISTFILE=~/.zsh_history
+unsetopt sharehistory
+setopt inc_append_history
 setopt hist_ignore_all_dups
-setopt hist_ignore_dups
 setopt hist_save_no_dups
 setopt hist_ignore_space
+setopt hist_reduce_blanks
 
-# 7. Completion & Plugin Styling
+# 8. Completion & Plugin Styling
 zstyle ":completion:*" matcher-list "m:{a-z}={A-Za-z}"
 zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 zstyle ":completion:*" menu no
@@ -68,7 +97,7 @@ zstyle ":fzf-tab:complete:cd:*" fzf-preview 'ls --color $realpath'
 zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview 'ls --color $realpath'
 zstyle :omz:plugins:ssh-agent lifetime 24h
 
-# 8. Prompt (Cached oh-my-posh)
+# 9. Prompt (Cached oh-my-posh)
 POSH_CONFIG="$HOME/.config/ohmyposh/powerlevel10k.json"
 POSH_CACHE="$HOME/.cache/oh-my-posh-init.zsh"
 if [[ ! -f "$POSH_CACHE" || "$POSH_CONFIG" -nt "$POSH_CACHE" ]]; then
@@ -77,21 +106,30 @@ if [[ ! -f "$POSH_CACHE" || "$POSH_CONFIG" -nt "$POSH_CACHE" ]]; then
 fi
 source "$POSH_CACHE"
 
-# 9. Keybindings (CRITICAL: bindkey -e must come BEFORE custom bindings)
+# 10. Keybindings & Widgets
 bindkey -e
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 bindkey "^p" history-search-backward
 bindkey "^n" history-search-forward
 bindkey -s "^[^L" '^Uclear^M'
-bindkey '^F' fzf-history-widget-all
 
-# 10. Edit Command Line (The Fix)
+# Re-assert Up Arrow (for the initial shell state)
+bindkey '^[[A' up-line-or-history
+bindkey '^[OA' up-line-or-history
+
+# Edit Command Line Widget (Ctrl-x Ctrl-e)
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 bindkey -M vicmd '^X^E' edit-command-line
 bindkey -M viins '^X^E' edit-command-line
+
+# History Widget (Ctrl-F) - Works now because ~/.functions is sourced above
+if [ -n "$(typeset -f fzf-history-widget-all)" ]; then
+    zle -N fzf-history-widget-all
+    bindkey '^F' fzf-history-widget-all
+fi
 
 # 11. External Tools & Scripts
 if [[ -f ~/.fzf.zsh ]]; then
@@ -100,11 +138,6 @@ elif [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
   source /usr/share/doc/fzf/examples/key-bindings.zsh
   source /usr/share/doc/fzf/examples/completion.zsh
 fi
-
-[[ -f ~/.functions ]] && source ~/.functions
-[[ -f ~/.aliases ]] && source ~/.aliases
-[[ -f ~/.zshrc.post.ext ]] && source ~/.zshrc.post.ext
-[[ -f ~/.secrets ]] && source ~/.secrets
 
 eval "$(zoxide init --cmd cd zsh)"
 
@@ -127,3 +160,7 @@ if [[ -s "/home/tawfik/.bun/_bun" ]]; then
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
 fi
+
+# 13. Final Post-Setup
+[[ -f ~/.zshrc.post.ext ]] && source ~/.zshrc.post.ext
+[[ -f ~/.secrets ]] && source ~/.secrets
