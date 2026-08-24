@@ -69,10 +69,17 @@ if ! command -v fnm >/dev/null; then
   curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 fi
 
-[ -d "$HOME/.local/share/fnm" ] && export PATH="$HOME/.local/share/fnm:$PATH"
+if [ -d "$HOME/.local/share/fnm" ]; then
+  export PATH="$HOME/.local/share/fnm:$PATH"
+fi
 
-if command -v fnm >/dev/null && ! command -v node >/dev/null; then
-  fnm install --lts
+if command -v fnm >/dev/null; then
+  eval "$(fnm env)"
+  if ! command -v node >/dev/null; then
+    fnm install --lts
+    fnm default lts-latest
+    eval "$(fnm env)"
+  fi
 fi
 
 if ! command -v cargo >/dev/null; then
