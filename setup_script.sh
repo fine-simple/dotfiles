@@ -1,8 +1,11 @@
 #!/bin/bash
 
-set -euxo
+set -euo pipefail
 
-export PATH=$PATH:~/.local/bin
+case ":$PATH:" in
+*":$HOME/.local/bin:"*) ;;
+*) export PATH="$PATH:$HOME/.local/bin" ;;
+esac
 
 install_pkg() {
   local pkg="$1"
@@ -54,6 +57,12 @@ if ! command -v fnm >/dev/null; then
   curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 fi
 
+[ -d "$HOME/.local/share/fnm" ] && export PATH="$HOME/.local/share/fnm:$PATH"
+
+if command -v fnm >/dev/null && ! command -v node >/dev/null; then
+  fnm install --lts
+fi
+
 if ! command -v cargo >/dev/null; then
   curl https://sh.rustup.rs -sSf | sh
   source ~/.cargo/env
@@ -98,9 +107,12 @@ git restore .
 stow .
 
 # Set zsh as default shell if not already
-if [ "$SHELL" != "$(which zsh)" ]; then
+zsh_path="$(command -v zsh)"
+current_shell="$(getent passwd "${USER:-$(id -un)}" | cut -d: -f7)"
+
+if [ "$current_shell" != "$zsh_path" ]; then
   echo "Setting zsh as default shell..."
-  chsh -s "$(which zsh)"
+  chsh -s "$zsh_path"
   echo "✓ Zsh set as default shell. Please log out and back in, or run 'exec zsh' to start using it."
 fi
 
