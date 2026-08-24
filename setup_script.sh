@@ -40,9 +40,16 @@ install_pkg tmux
 install_pkg pipx
 install_pkg neovim
 install_pkg unzip
+install_pkg git-lfs
+install_pkg inotify-tools
+install_pkg xclip
 
 if ! command -v oh-my-posh >/dev/null; then
   curl -s https://ohmyposh.dev/install.sh | bash -s
+fi
+
+if ! command -v atuin >/dev/null; then
+  curl -sSf https://static.atuin.sh/scripts/install.sh | bash
 fi
 
 if ! command -v fzf >/dev/null; then
@@ -52,6 +59,11 @@ fi
 
 install_pkg python3
 install_pkg python3-pip pip3
+
+if ! python3 -c 'import groq' &>/dev/null; then
+  python3 -m pip install --user groq 2>/dev/null ||
+    python3 -m pip install --user --break-system-packages groq
+fi
 
 if ! command -v fnm >/dev/null; then
   curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
@@ -98,6 +110,14 @@ if [ ! -d "$ZINIT_HOME" ]; then
   mkdir -p "$(dirname $ZINIT_HOME)"
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
+
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [ ! -d "$TPM_DIR" ]; then
+  mkdir -p "$(dirname $TPM_DIR)"
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
+
+git lfs install
 
 
 echo 'Running Stow...'

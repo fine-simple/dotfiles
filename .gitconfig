@@ -6,7 +6,7 @@
 	email = ahmed.tawfik.at10@gmail.com
 	name = Ahmed Tawfik
 [core]
-	editor = vim
+	editor = nvim
 	pager = delta
 [rerere]
 	enabled = true
