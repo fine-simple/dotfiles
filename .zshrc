@@ -67,8 +67,15 @@ zinit ice depth=1 lucid; zinit light zsh-users/zsh-completions
 zinit ice depth=1 wait=1 lucid; zinit light Aloxaf/fzf-tab
 zinit ice depth=1 wait=1 lucid; zinit light olets/zsh-abbr
 
-# ATUIN FIX: Use 'atload' to re-bind the Up arrow AFTER the plugin loads
-zinit ice depth=1 wait=1 lucid atload"bindkey '^[[A' up-line-or-history; bindkey '^[OA' up-line-or-history"
+# line 1: `atuin` binary as command, from github release, only look at .tar.gz files, use the `atuin` file from the extracted archive
+# line 2: setup at clone(create init.zsh, completion)
+# line 3: pull behavior same as clone, source init.zsh
+zinit ice depth=1 wait=1 \
+    as"command" from"gh-r" bpick"atuin-x86_64-unknown-linux-musl.tar.gz" mv"atuin*/atuin -> atuin" \
+    atclone"./atuin init zsh > init.zsh; ./atuin gen-completions --shell zsh > _atuin" \
+    atpull"%atclone" src"init.zsh" \
+    atload"bindkey '^[[A' up-line-or-history; bindkey '^[OA' up-line-or-history" \
+    lucid;
 zinit light atuinsh/atuin
 
 # Load syntax highlighting last

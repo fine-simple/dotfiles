@@ -48,10 +48,6 @@ if ! command -v oh-my-posh >/dev/null; then
   curl -s https://ohmyposh.dev/install.sh | bash -s
 fi
 
-if ! command -v atuin >/dev/null; then
-  curl -sSf https://static.atuin.sh/scripts/install.sh | bash
-fi
-
 if ! command -v fzf >/dev/null; then
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   ~/.fzf/install
