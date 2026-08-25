@@ -62,21 +62,21 @@ zinit cdreplay -q
 [[ -f ~/.aliases ]] && source ~/.aliases
 
 # 6. Plugins (Turbo Mode)
-zinit ice wait"0" lucid; zinit light zsh-users/zsh-autosuggestions
-zinit ice wait"0" lucid; zinit light Aloxaf/fzf-tab
-zinit ice wait"0" lucid; zinit light zsh-users/zsh-completions
-zinit ice wait"0" lucid; zinit light olets/zsh-abbr
+zinit ice depth=1 lucid; zinit light zsh-users/zsh-autosuggestions
+zinit ice depth=1 lucid; zinit light zsh-users/zsh-completions
+zinit ice depth=1 wait=1 lucid; zinit light Aloxaf/fzf-tab
+zinit ice depth=1 wait=1 lucid; zinit light olets/zsh-abbr
 
 # ATUIN FIX: Use 'atload' to re-bind the Up arrow AFTER the plugin loads
-zinit ice wait"0" lucid atload"bindkey '^[[A' up-line-or-history; bindkey '^[OA' up-line-or-history"
+zinit ice depth=1 wait=1 lucid atload"bindkey '^[[A' up-line-or-history; bindkey '^[OA' up-line-or-history"
 zinit light atuinsh/atuin
 
 # Load syntax highlighting last
-zinit ice wait"0" lucid; zinit light zsh-users/zsh-syntax-highlighting
+zinit ice depth=1 wait=1 lucid; zinit light zsh-users/zsh-syntax-highlighting
 
-zinit snippet OMZP::copyfile
-zinit snippet OMZP::jsontools
-zinit snippet OMZP::pip
+zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::copyfile
+zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::jsontools
+zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::pip
 
 # 7. History & Options (NFS Optimized)
 HISTSIZE=5000
