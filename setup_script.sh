@@ -133,6 +133,14 @@ stow --adopt .
 git restore .
 stow .
 
+# Create pre/post zshrc extension files if they don't exist
+for ext_file in ~/.zshrc.pre.ext ~/.zshrc.post.ext; do
+  if [ ! -f "$ext_file" ]; then
+    touch "$ext_file"
+    echo "✓ Created $ext_file"
+  fi
+done
+
 # Set zsh as default shell if not already
 zsh_path="$(command -v zsh)"
 current_shell="$(getent passwd "${USER:-$(id -un)}" | cut -d: -f7)"
