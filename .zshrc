@@ -149,7 +149,7 @@ fi
 eval "$(zoxide init --cmd cd zsh)"
 
 # 12. Lazy-loaded Version Managers
-FNM_PATH="/home/tawfik/.local/share/fnm"
+FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   __fnm_lazy_load() {
@@ -162,8 +162,8 @@ if [ -d "$FNM_PATH" ]; then
   unset __cmd
 fi
 
-if [[ -s "/home/tawfik/.bun/_bun" ]]; then
-  source "/home/tawfik/.bun/_bun"
+if [[ -s "$HOME/.bun/_bun" ]]; then
+  source "$HOME/.bun/_bun"
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
 fi
