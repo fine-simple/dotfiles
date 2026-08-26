@@ -79,7 +79,7 @@ if command -v fnm >/dev/null; then
 fi
 
 if ! command -v cargo >/dev/null; then
-  curl https://sh.rustup.rs -sSf | sh
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --no-modify-path -y
   source ~/.cargo/env
 fi
 
