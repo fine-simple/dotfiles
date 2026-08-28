@@ -22,7 +22,6 @@
   },
   "transient_prompt": {
     "template": "$ ",
-    "right_template": "{{ if .Segments.Contains \"Executiontime\" }}<#c4a000> {{ .Segments.Executiontime.FormattedMs }} \uf252 </>{{ end }}",
     "background": "transparent",
     "foreground_templates": [
       "{{if ne .Code 0}}p:red{{end}}",
