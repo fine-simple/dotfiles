@@ -6,7 +6,7 @@ alias egrep='egrep --color=auto'
 
 alias ls='eza'
 
-alias ll='ls -alF'
+alias ll='ls -al'
 alias la='ls -A'
 alias l='ls -CF'
 
