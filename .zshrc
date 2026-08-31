@@ -169,5 +169,13 @@ if [[ -s "$HOME/.bun/_bun" ]]; then
 fi
 
 # 13. Final Post-Setup
-[[ -f ~/.zshrc.post.ext ]] && source ~/.zshrc.post.ext
-[[ -f ~/.secrets ]] && source ~/.secrets
+if [[ -f ~/.zshrc.post.ext ]]
+then
+  source ~/.zshrc.post.ext
+fi
+
+if [[ -f ~/.secrets ]]
+then
+  source ~/.secrets
+fi
+
