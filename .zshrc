@@ -13,7 +13,7 @@ fi
 export ATUIN_NOBIND_UP=true
 
 # Force Atuin to use a native Linux path to bypass NFS/WSL locking issues
-export ATUIN_DATA_DIR="$HOME/.atuin-local"
+export ATUIN_DATA_DIR="/var/tmp/atuin-$USER"
 mkdir -p "$ATUIN_DATA_DIR"
 
 # Load Atuin binary environment
