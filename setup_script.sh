@@ -70,11 +70,11 @@ if [ -d "$HOME/.local/share/fnm" ]; then
 fi
 
 if command -v fnm >/dev/null; then
-  eval "$(fnm env)"
+  eval "$(fnm env --shell bash)"
   if ! command -v node >/dev/null; then
     fnm install --lts
     fnm default lts-latest
-    eval "$(fnm env)"
+    eval "$(fnm env --shell bash)"
   fi
 fi
 
