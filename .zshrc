@@ -20,6 +20,14 @@ mkdir -p "$ATUIN_DATA_DIR"
 [[ -f "$HOME/.atuin/bin/env" ]] && . "$HOME/.atuin/bin/env"
 # -------------------------------------------------------------
 
+# Source .env and .secrets with automatic export
+set -a
+if [[ -f ~/.env ]]
+then
+  source ~/.env
+fi
+set +a
+
 export EDITOR='nvim'
 export VISUAL='nvim'
 export PATH=~/bin:/usr/local/bin:~/.local/bin:~/.scripts:~/.fzf/bin:$PATH
@@ -173,9 +181,3 @@ if [[ -f ~/.zshrc.post.ext ]]
 then
   source ~/.zshrc.post.ext
 fi
-
-if [[ -f ~/.secrets ]]
-then
-  source ~/.secrets
-fi
-
