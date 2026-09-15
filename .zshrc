@@ -33,7 +33,7 @@ fi
 # 2. Tmux Auto-Start (Interactive only)
 if [[ -z "${TMUX:-}" && -t 1 && -z "${ZSH_TMUX_STARTED:-}" ]]; then
   export ZSH_TMUX_STARTED=1
-  FIRST_UNATTACHED="$(tmux ls -F '#{session_name}|#{?session_attached,attached,not attached}' 2>/dev/null | grep 'not attached$' | tail -n 1 | cut -d '|' -f1)"
+  FIRST_UNATTACHED=$(tmux ls -F '#{session_last_attached} #{session_name} #{session_attached}' 2>/dev/null | sort -nr | awk '$3 == 0 { print $2; exit }')
   if [[ -n "$FIRST_UNATTACHED" ]]; then
     exec tmux attach -t "$FIRST_UNATTACHED" 2> /dev/null
   else
