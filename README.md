@@ -22,8 +22,8 @@ This repository contains my personal dotfiles and configuration for a modern ter
   - `zsh-syntax-highlighting` - real-time command syntax highlighting
   - `zsh-completions` - additional completion definitions
   - `fzf-tab` - fuzzy search for tab completions
-  - `zsh-nvm` - Node Version Manager integration
-- **Smart history**: 10,000 entries with duplicate removal and persistent across sessions
+  - `zsh-abbr` - abbreviations/expansions for frequently used commands
+- **Smart history**: 1,000,000 saved entries with duplicate removal and persistent across sessions
 - **Fuzzy finder**: FZF integration for file/history search
 - **Auto-tmux**: Automatically starts or attaches to tmux on shell launch
 

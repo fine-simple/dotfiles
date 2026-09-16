@@ -20,7 +20,7 @@ mkdir -p "$ATUIN_DATA_DIR"
 [[ -f "$HOME/.atuin/bin/env" ]] && . "$HOME/.atuin/bin/env"
 # -------------------------------------------------------------
 
-# Source .env and .secrets with automatic export
+# Source .env with automatic export
 set -a
 if [[ -f ~/.env ]]
 then
@@ -110,7 +110,6 @@ zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"
 zstyle ":completion:*" menu no
 zstyle ":fzf-tab:complete:cd:*" fzf-preview 'ls --color $realpath'
 zstyle ":fzf-tab:complete:__zoxide_z:*" fzf-preview 'ls --color $realpath'
-zstyle :omz:plugins:ssh-agent lifetime 24h
 
 # 9. Prompt (Cached oh-my-posh)
 POSH_CONFIG="$HOME/.config/ohmyposh/powerlevel10k.json"
@@ -128,10 +127,6 @@ bindkey "^[[1;5D" backward-word
 bindkey "^p" history-search-backward
 bindkey "^n" history-search-forward
 bindkey -s "^[^L" '^Uclear^M'
-
-# Re-assert Up Arrow (for the initial shell state)
-bindkey '^[[A' up-line-or-history
-bindkey '^[OA' up-line-or-history
 
 # Edit Command Line Widget (Ctrl-x Ctrl-e)
 autoload -Uz edit-command-line

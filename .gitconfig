@@ -1,6 +1,7 @@
 [push]
 	autoSetupRemote = true
 	default = current
+[commit]
 	gpgSign = false
 [user]
 	email = ahmed.tawfik.at10@gmail.com
@@ -16,7 +17,7 @@
 	staash = stash -u
 	bb = !better-git-branch
 	count-lines = "! git log --author=\"$1\" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }' #"
-  rm-branch = "!git branch -D \"$1\"; git push origin --delete origin/\"$1\""
+  rm-branch = "!git branch -D \"$1\"; git push origin --delete \"$1\"\""
   unfire = !git-unfire
 [column]
 	ui = auto

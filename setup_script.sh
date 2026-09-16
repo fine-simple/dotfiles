@@ -6,7 +6,8 @@ case ":$PATH:" in
 *":$HOME/.local/bin:"*) ;;
 *) export PATH="$PATH:$HOME/.local/bin" ;;
 esac
-
+# Ensure cargo env is available (for cargo installs later)
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 install_pkg() {
   local pkg="$1"
   local cmd="${2:-$1}"  # Use second arg as command name, or default to package name
@@ -58,7 +59,8 @@ install_pkg python3-pip pip3
 
 if ! python3 -c 'import groq' &>/dev/null; then
   python3 -m pip install --user groq 2>/dev/null ||
-    python3 -m pip install --user --break-system-packages groq
+    python3 -m pip install --user --break-system-packages groq ||
+    echo "⚠️  Failed to install groq, continuing..."
 fi
 
 if ! command -v fnm >/dev/null; then

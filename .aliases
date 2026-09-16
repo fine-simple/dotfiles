@@ -1,13 +1,11 @@
-alias ls="ls --color"
-
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-alias ls='eza'
+alias ls='eza --color=auto'
 
 alias ll='ls -al'
 alias la='ls -A'
-alias l='ls -CF'
+alias l='eza -F'
 
 alias vim=nvim
