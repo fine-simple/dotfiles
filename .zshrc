@@ -33,11 +33,6 @@ export VISUAL='nvim'
 export PATH=~/bin:/usr/local/bin:~/.local/bin:~/.scripts:~/.fzf/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin
 
-# WSL: strip slow Windows paths
-if [[ -n "${WSL_DISTRO_NAME:-}" ]]; then
-  path=("${(@)path:#/mnt/*}")
-fi
-
 # 2. Tmux Auto-Start (Interactive only)
 if [[ -z "${TMUX:-}" && -t 1 && -z "${ZSH_TMUX_STARTED:-}" ]]; then
   export ZSH_TMUX_STARTED=1
@@ -92,6 +87,7 @@ zinit ice depth=1 wait=1 lucid; zinit light zsh-users/zsh-syntax-highlighting
 zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::copyfile
 zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::jsontools
 zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::pip
+zinit ice depth=1 wait=1 lucid; zinit snippet OMZP::git
 
 # 7. History & Options (NFS Optimized)
 HISTSIZE=5000
@@ -171,8 +167,15 @@ if [[ -s "$HOME/.bun/_bun" ]]; then
   export PATH="$BUN_INSTALL/bin:$PATH"
 fi
 
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
+
+eval "$(pyenv virtualenv-init -)"
+
 # 13. Final Post-Setup
 if [[ -f ~/.zshrc.post.ext ]]
 then
   source ~/.zshrc.post.ext
 fi
+

@@ -36,12 +36,14 @@
 	ui = auto
 [init]
 	defaultBranch = main
-[includeIf "gitdir:~/work/"]
-  path = ~/.work/.gitconfig
-
 [interactive]
 	diffFilter = delta --color-only
 [delta]
 	navigate = true
 [merge]
 	conflictStyle = zdiff3
+[http]
+	sslVerify = false
+[includeIf "gitdir:~/work/"]
+  path = ~/.work/.gitconfig
+

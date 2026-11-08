@@ -1,11 +1,18 @@
+# grep
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+# ls
 alias ls='eza --color=auto'
 
 alias ll='ls -al'
 alias la='ls -A'
 alias l='eza -F'
 
+# vim
 alias vim=nvim
+
+
+# bat
+alias bat='bat --style=plain --paging=never'
