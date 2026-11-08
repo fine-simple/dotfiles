@@ -44,6 +44,9 @@
 	conflictStyle = zdiff3
 [http]
 	sslVerify = false
+# Loaded only if the file exists; silently skipped otherwise
+[include]
+    path = ~/.gitconfig.local
 [includeIf "gitdir:~/work/"]
   path = ~/.work/.gitconfig
 
