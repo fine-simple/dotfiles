@@ -1,0 +1,8 @@
+#!/bin/bash
+
+CONTENT="$*"
+
+curl \
+  -d "$CONTENT" \
+  ntfy.sh/"$NTFY_TOPIC"
+
